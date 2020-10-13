@@ -1,0 +1,13 @@
+.rosterContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rosterCharacterBorder {
+  border: 1px solid white;
+  height: 77px;
+}
+
+.rosterCharacterUsed {
+  opacity: 0.2;
+}

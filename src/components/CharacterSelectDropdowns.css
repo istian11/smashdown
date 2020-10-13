@@ -1,0 +1,15 @@
+.multiCharacterSelectContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.characterDropdownsContainer {
+  align-items: center;
+  display: flex;
+  margin-top: 10px;
+}
+
+.fightButton {
+  margin-top: 30px;
+}
