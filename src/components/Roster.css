@@ -1,6 +1,8 @@
 .rosterContainer {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1000px;
 }
 
 .rosterCharacterBorder {
