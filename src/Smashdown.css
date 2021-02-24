@@ -5,7 +5,8 @@
   flex-direction: column;
   height: 100vh;
   margin: 0;
-  padding: 0 50px;
+  overflow-y: scroll;
+  padding: 0 50px 20px;
   text-align: center;
 }
 
