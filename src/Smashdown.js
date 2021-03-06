@@ -3,14 +3,30 @@ import CharacterSelectDropdowns from './components/CharacterSelectDropdowns.js'
 import Roster from './components/Roster.js'
 import './Smashdown.css';
 
+function setInitialPlayerData(numPlayers, gameState, setGameState) {
+  const allPlayerData = {};
+  for (let i = 0; i < numPlayers; i++) {
+    const currentPlayerData = {
+      'currentCharacter': '',
+      'winningCharacters': [],
+    }
+    allPlayerData[i] = currentPlayerData;
+  }
+  gameState['playerData'] = allPlayerData;
+  setGameState(gameState);
+}
 
 function Smashdown() {
-  const [gameStart, setGameStart] = useState(true);
-  const [numPlayers, setNumPlayers] = useState(0);
-  const [selectedNumPlayers, setSelectedNumPlayers] = useState(false);
+  const initialGameState = {
+    'fightStart': false,
+    'usedCharacters': [],
+    'playerData': {},
+  };
 
-  const [playerData, setPlayerData] = useState({});
-  const [usedCharacters, setUsedCharacters] = useState([]);
+  const [gameStart, setGameStart] = useState(true);
+  const [selectedNumPlayers, setSelectedNumPlayers] = useState(false);
+  const [gameState, setGameState] = useState(initialGameState);
+  const fightStart = gameState['fightStart'];
 
   return (
     <div className="mainContainer">
@@ -19,9 +35,9 @@ function Smashdown() {
         <div className="description">Play through the roster to see who comes out on top!</div>
       </section>
       <section>
-        <Roster usedCharacters={usedCharacters} />
+        <Roster gameState={gameState} />
       </section>
-      {gameStart ? (
+      {gameStart && (
         <section className="numPlayersSection">
           <div className="mainLabel">{"Number of players:"}</div>
           <div className="numPlayersDropdown">
@@ -29,7 +45,7 @@ function Smashdown() {
               name="numPlayers"
               id="numPlayers"
               onChange={(e) => {
-                setNumPlayers(parseInt(e.target.value));
+                setInitialPlayerData(parseInt(e.target.value), gameState, setGameState);
                 setSelectedNumPlayers(true);
               }}
             >
@@ -41,14 +57,21 @@ function Smashdown() {
           </div>
           <button disabled={!selectedNumPlayers} onClick={() => setGameStart(false)} type="button">Start</button>
         </section>
-      ) : (
+      )}
+      {!gameStart && !fightStart && (
         <section className="characterSelectSection">
           <div className="mainLabel">{'Choose your fighter!'}</div>
           <CharacterSelectDropdowns
-            usedCharacters={usedCharacters}
-            setUsedCharacters={setUsedCharacters}
-            numPlayers={numPlayers}
+            gameState={gameState}
+            setGameState={setGameState}
           />
+        </section>
+      )}
+      {!gameStart && fightStart && (
+        <section>
+          <div>
+            Show icons fighting here. Add animations? Click on winner?
+          </div>
         </section>
       )}
     </div>

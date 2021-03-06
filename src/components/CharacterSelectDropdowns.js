@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SingleCharacterSelect from '../components/SingleCharacterSelect.js'
 import './CharacterSelectDropdowns.css';
 
+function setFightStart(gameState, setGameState) {
+  const clonedGameState = {...gameState};
+  clonedGameState['fightStart'] = true;
+  setGameState(clonedGameState);
+}
 
-function renderCharacterSelects(usedCharacters, currentCharacters, setCurrentCharacters, numPlayers) {
+function renderCharacterSelects(gameState, setGameState, numPlayers) {
   const characterSelects = [];
   for (let i = 0; i < numPlayers; i++) {
     const characterSelect = (
-      <SingleCharacterSelect 
-        usedCharacters={usedCharacters}
-        currentCharacters={currentCharacters}
-        setCurrentCharacters={setCurrentCharacters} />
+      <SingleCharacterSelect
+        index={i}
+        gameState={gameState}
+        setGameState={setGameState} />
     );
     characterSelects.push(characterSelect);
   }
@@ -18,17 +23,24 @@ function renderCharacterSelects(usedCharacters, currentCharacters, setCurrentCha
 }
 
 function CharacterSelectDropdowns(props) {
-  const [currentCharacters, setCurrentCharacters] = useState([]);
-  const { usedCharacters, numPlayers} = props;
+  const { gameState, setGameState } = props;
+  const numPlayers = Object.keys(gameState['playerData']).length;
+  let numSelectedCharacters = 0;
+  for (let i = 0; i < numPlayers; i++) {
+    const currentCharacter = gameState['playerData'][i]['currentCharacter'];
+    if (currentCharacter !== '') {
+      numSelectedCharacters++;
+    }
+  }
   return (
     <div className="multiCharacterSelectContainer">
       <div className="characterDropdownsContainer">
-        {renderCharacterSelects(usedCharacters, currentCharacters, setCurrentCharacters, numPlayers)}
+        {renderCharacterSelects(gameState, setGameState, numPlayers)}
       </div>
       <div className="fightButton">
         <button
-          disabled={currentCharacters.length !== numPlayers}
-          onClick={() => void(0)}
+          disabled={numSelectedCharacters !== numPlayers}
+          onClick={() => setFightStart(gameState, setGameState)}
           type="button"
         >
           Fight!

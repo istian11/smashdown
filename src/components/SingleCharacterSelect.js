@@ -1,26 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { characters, characterData } from '../consts.js';
 import './SingleCharacterSelect.css';
 
 const IMAGE_PATH = process.env.PUBLIC_URL + '/assets/';
 
 
-function renderCharacterSelectDropdown(usedCharacters, currentCharacters, setCurrentCharacters, myCharacter, setMyCharacter) {
+function renderCharacterSelectDropdown(index, gameState, setGameState) {
+  const usedCharacters = gameState['usedCharacters'];
+  const currentCharacters = Object.keys(gameState['playerData']).map(currIndex => {
+    return gameState['playerData'][currIndex]['currentCharacter'];
+  });
   return (
     <div className="characterDropdown">
       <select
         name="characterSelect"
         id="characterSelect"
         onChange={(e) => {
-          let characters = [...currentCharacters];
           const selectedCharacter = e.target.value;
-          characters.push(selectedCharacter);
-          if (characters.includes(myCharacter)) {
-            const myCharacterIndex = characters.indexOf(myCharacter);
-            characters.splice(myCharacterIndex, 1);
-          }
-          setCurrentCharacters(characters);
-          setMyCharacter(selectedCharacter);
+          const clonedGameState = {...gameState};
+          clonedGameState['playerData'][index]['currentCharacter'] = selectedCharacter;
+          setGameState(clonedGameState);
         }}
       >
         <option value="" selected disabled hidden>Choose</option>
@@ -81,14 +80,14 @@ function renderSeriesIcon(myCharacter) {
 }
 
 function SingleCharacterSelect(props) {
-  const [myCharacter, setMyCharacter] = useState('');
-  const { usedCharacters, currentCharacters, setCurrentCharacters} = props;
+  const { index, gameState, setGameState } = props;
+  const myCharacter = gameState['playerData'][index]['currentCharacter']
   return (
     <div className="singleCharacterContainer">
       {renderPortrait(myCharacter)}
       {renderName(myCharacter)}
       {renderSeriesIcon(myCharacter)}
-      {renderCharacterSelectDropdown(usedCharacters, currentCharacters, setCurrentCharacters, myCharacter, setMyCharacter)}
+      {renderCharacterSelectDropdown(index, gameState, setGameState)}
     </div>
   );
 }
